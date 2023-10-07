@@ -1,7 +1,11 @@
 import express from 'express';
+import DBuser from './database/user.json'
+import { writeFile } from 'jsonfile';
 
 const app = express();
 const PORT = 45000;
+
+app.use(express.json());
 
 app.get('/api', (req, res) => {
 	res.json({
@@ -12,24 +16,17 @@ app.get('/api', (req, res) => {
 });
 
 app.get('/api/data', (req, res) => {
-	res.json([
-		{
-			username: 'jrodriguez',
-			email: 'jr@gmail.com',
-		},
-		{
-			username: 'jjuan',
-			email: 'jj@gmail.com',
-		},
-		{
-			username: 'carolina',
-			email: 'caro@gmail.com',
-		},
-		{
-			username: 'nestor',
-			email: 'nn@gmail.com',
-		},
-	]);
+	res.json(DBuser);
+});
+
+app.post('/api/data', (req, res) => {
+	const { username, email } = req.body;
+
+		DBuser.push({ username, email });
+
+		writeFile('./src/database/users.json', DBuser);
+
+		return { username, email };
 });
 
 app.use('*', (req, res) => {
