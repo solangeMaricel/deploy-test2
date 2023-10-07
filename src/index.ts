@@ -1,6 +1,6 @@
-import express from 'express';
-import DBuser from './database/user.json'
-import { writeFile } from 'jsonfile';
+import express, { json } from 'express';
+import DBuser from './database/users.json'
+import jsonfile from 'jsonfile';
 
 const app = express();
 const PORT = 45000;
@@ -20,13 +20,14 @@ app.get('/api/data', (req, res) => {
 });
 
 app.post('/api/data', (req, res) => {
-	const { username, email } = req.body;
+	/* const { username, email } = req.body;
 
-		DBuser.push({ username, email });
+		DBuser.push({ username, email }); */
+		const { username, email } = req.body;
+		DBuser.push({ username, email } );
+		jsonfile.writeFileSync('./src/database/users.json', DBuser);
+		res.status(201).json(req.body)
 
-		writeFile('./src/database/users.json', DBuser);
-
-		return { username, email };
 });
 
 app.use('*', (req, res) => {
